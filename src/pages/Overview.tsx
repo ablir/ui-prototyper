@@ -91,6 +91,17 @@ export function Overview({ onNavigate }: { onNavigate: (v: string) => void }) {
           >
             Explore the spec
           </Button>
+          <Button
+            size="md"
+            component="a"
+            href={`${import.meta.env.BASE_URL}blueprint-spec-kit.zip`}
+            download
+            variant="white"
+            color="dark"
+            leftSection={<Text aria-hidden fz={16} lh={1}>⤓</Text>}
+          >
+            Download spec kit (.zip)
+          </Button>
         </Group>
       </Paper>
 

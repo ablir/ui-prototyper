@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Grid, Paper, ScrollArea, Box, Title, Text, Group, Badge, Container } from '@mantine/core';
+import { Grid, Paper, ScrollArea, Box, Title, Text, Group, Badge, Container, Button } from '@mantine/core';
 import { FileTree } from '../components/FileTree';
 import { MarkdownView } from '../components/MarkdownView';
 import { LaymanPanel } from '../components/LaymanPanel';
@@ -14,9 +14,21 @@ export function SpecExplorer() {
   return (
     <Container size="xl" px={0}>
       <Box mb="md">
-        <Group gap="sm" align="center">
-          <Title order={2}>Spec Explorer</Title>
-          <Badge variant="light" color="indigo">{SPEC_FILES.length} files</Badge>
+        <Group justify="space-between" align="center" wrap="nowrap">
+          <Group gap="sm" align="center">
+            <Title order={2}>Spec Explorer</Title>
+            <Badge variant="light" color="indigo">{SPEC_FILES.length} files</Badge>
+          </Group>
+          <Button
+            component="a"
+            href={`${import.meta.env.BASE_URL}blueprint-spec-kit.zip`}
+            download
+            variant="light"
+            radius="md"
+            leftSection={<Text aria-hidden fz={16} lh={1}>⤓</Text>}
+          >
+            Download .zip
+          </Button>
         </Group>
         <Text c="dimmed" size="sm" mt={4}>
           Browse the full <Text span ff="monospace">blueprint-spec-kit.zip</Text>. The center pane shows
