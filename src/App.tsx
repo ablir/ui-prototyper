@@ -107,6 +107,11 @@ export function App() {
         {view === 'spec' && <SpecExplorer />}
         {view === 'guide' && <UsageGuide />}
       </AppShell.Main>
+
+      <a className="author-credit" href={REPO_URL} target="_blank" rel="noreferrer" title="View the source on GitHub">
+        <span className="dot" aria-hidden />
+        Crafted by&nbsp;<b>ablir</b>
+      </a>
     </AppShell>
   );
 }

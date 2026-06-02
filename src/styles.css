@@ -8,6 +8,46 @@ body {
   margin: 0;
 }
 
+/* Discreet sticky author credit, bottom-right */
+.author-credit {
+  position: fixed;
+  right: 14px;
+  bottom: 12px;
+  z-index: 300;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  color: var(--mantine-color-dimmed);
+  text-decoration: none;
+  opacity: 0.5;
+  transition: opacity 160ms ease, color 160ms ease, border-color 160ms ease;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--mantine-color-default-border);
+  background: color-mix(in srgb, var(--mantine-color-body) 65%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  user-select: none;
+}
+.author-credit:hover {
+  opacity: 0.95;
+  color: var(--mantine-color-text);
+  border-color: var(--mantine-color-indigo-7);
+}
+.author-credit b {
+  font-weight: 600;
+  color: var(--mantine-color-indigo-4);
+}
+.author-credit .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--mantine-color-indigo-5);
+  opacity: 0.85;
+}
+
 /* Markdown viewer typography (scoped to .md-body) */
 .md-body {
   font-size: 15px;
