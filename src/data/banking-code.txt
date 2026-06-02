@@ -1,0 +1,553 @@
+import { useState } from 'react';
+import {
+  MantineProvider,
+  Paper,
+  Card,
+  Grid,
+  SimpleGrid,
+  Group,
+  Stack,
+  Title,
+  Text,
+  Divider,
+  Avatar,
+  Alert,
+  Badge,
+  RingProgress,
+  Progress,
+  Table,
+  Tabs,
+  SegmentedControl,
+  Accordion,
+  Timeline,
+  ThemeIcon,
+  ScrollArea,
+  NumberFormatter,
+} from '@mantine/core';
+import '@mantine/core/styles.css';
+
+interface Trend {
+  direction: 'up' | 'down';
+  pct: string;
+  color: string;
+}
+
+interface Kpi {
+  label: string;
+  value: string;
+  trend: Trend;
+}
+
+interface AllocationClass {
+  assetClass: string;
+  pct: number;
+  color: string;
+}
+
+interface Holding {
+  ticker: string;
+  name: string;
+  assetClass: string;
+  marketValue: number;
+  weightPct: number;
+  dayChangePct: number;
+}
+
+interface Transaction {
+  type: 'buy' | 'sell' | 'dividend';
+  description: string;
+  date: string;
+}
+
+interface AdvisorNote {
+  value: string;
+  title: string;
+  meta: string;
+  body: string;
+}
+
+const client = {
+  name: 'Eleanor R. Whitcombe',
+  accountNumber: 'PB-4471-08823',
+  segment: 'Private Wealth — Tier I',
+  relationshipManager: 'Julian A. Mercer',
+  avatarUrl: 'https://i.pravatar.cc/120?img=47',
+};
+
+const complianceNote =
+  'KYC review due 30 Jun 2026 — suitability profile: Balanced/Growth. Cross-border holdings flagged for FATCA reporting; one position pending source-of-funds confirmation.';
+
+const kpis: Kpi[] = [
+  {
+    label: 'Total Assets Under Management',
+    value: '$42,318,500',
+    trend: { direction: 'up', pct: '+3.8% QTD', color: 'teal' },
+  },
+  {
+    label: 'Net Worth',
+    value: '$58,940,000',
+    trend: { direction: 'up', pct: '+2.1% QTD', color: 'teal' },
+  },
+  {
+    label: 'YTD Return',
+    value: '+9.42%',
+    trend: { direction: 'up', pct: 'vs. +6.1% bench', color: 'teal' },
+  },
+  {
+    label: 'Available Cash',
+    value: '$1,684,200',
+    trend: { direction: 'down', pct: '-12.4% MoM', color: 'red' },
+  },
+];
+
+const allocation: AllocationClass[] = [
+  { assetClass: 'Equities', pct: 46, color: 'indigo' },
+  { assetClass: 'Fixed Income', pct: 24, color: 'cyan' },
+  { assetClass: 'Real Estate', pct: 14, color: 'grape' },
+  { assetClass: 'Alternatives', pct: 12, color: 'orange' },
+  { assetClass: 'Cash', pct: 4, color: 'teal' },
+];
+
+const holdings: Holding[] = [
+  {
+    ticker: 'MSFT',
+    name: 'Microsoft Corp.',
+    assetClass: 'Equities',
+    marketValue: 3120450,
+    weightPct: 7.4,
+    dayChangePct: -1.23,
+  },
+  {
+    ticker: 'NESN',
+    name: 'Nestlé SA',
+    assetClass: 'Equities',
+    marketValue: 2540900,
+    weightPct: 6.0,
+    dayChangePct: 0.84,
+  },
+  {
+    ticker: 'ASML',
+    name: 'ASML Holding NV',
+    assetClass: 'Equities',
+    marketValue: 1985300,
+    weightPct: 4.7,
+    dayChangePct: 2.16,
+  },
+  {
+    ticker: 'US10Y',
+    name: 'US Treasury 10Y Note',
+    assetClass: 'Fixed Income',
+    marketValue: 4210000,
+    weightPct: 9.9,
+    dayChangePct: 0.12,
+  },
+  {
+    ticker: 'BUND',
+    name: 'German Bund 7Y',
+    assetClass: 'Fixed Income',
+    marketValue: 2980000,
+    weightPct: 7.0,
+    dayChangePct: -0.21,
+  },
+  {
+    ticker: 'PSP-LDN',
+    name: 'Prime Mayfair Property Fund',
+    assetClass: 'Real Estate',
+    marketValue: 3650000,
+    weightPct: 8.6,
+    dayChangePct: 0.0,
+  },
+  {
+    ticker: 'BX-PE',
+    name: 'Blackstone Private Equity X',
+    assetClass: 'Alternatives',
+    marketValue: 2750000,
+    weightPct: 6.5,
+    dayChangePct: 1.45,
+  },
+  {
+    ticker: 'GLD',
+    name: 'Physical Gold Allocation',
+    assetClass: 'Alternatives',
+    marketValue: 1480000,
+    weightPct: 3.5,
+    dayChangePct: -0.67,
+  },
+];
+
+const transactions: Transaction[] = [
+  {
+    type: 'dividend',
+    description: 'Dividend received — Nestlé SA (CHF 12,400)',
+    date: '28 May 2026',
+  },
+  {
+    type: 'buy',
+    description: 'Bought 4,200 ASML Holding NV @ €912.40',
+    date: '21 May 2026',
+  },
+  {
+    type: 'sell',
+    description: 'Sold $1.2M US Treasury 2Y on maturity roll',
+    date: '14 May 2026',
+  },
+  {
+    type: 'dividend',
+    description: 'Coupon received — German Bund 7Y (€18,900)',
+    date: '09 May 2026',
+  },
+  {
+    type: 'buy',
+    description: 'Subscribed $750k Blackstone Private Equity X',
+    date: '02 May 2026',
+  },
+];
+
+const advisorNotes: AdvisorNote[] = [
+  {
+    value: 'rebalance',
+    title: 'Q2 Rebalancing Recommendation',
+    meta: 'Julian A. Mercer · 26 May 2026',
+    body: 'Trim US large-cap exposure by ~4% into short-duration fixed income ahead of the June rate decision. Equities are 2pts above the strategic band for the Balanced/Growth mandate. Proposed reallocation maintains the target risk budget while improving carry.',
+  },
+  {
+    value: 'liquidity',
+    title: 'Liquidity & Cash Planning',
+    meta: 'Julian A. Mercer · 19 May 2026',
+    body: 'Available cash has drawn down to $1.68M following the PE subscription. Recommend replenishing to a $2.5M floor before the Q3 capital call schedule. Money-market sweep remains the preferred parking vehicle.',
+  },
+  {
+    value: 'tax',
+    title: 'Cross-Border Tax & FATCA Note',
+    meta: 'Compliance Desk · 12 May 2026',
+    body: 'Two CHF-denominated positions require updated FATCA self-certification. Source-of-funds confirmation outstanding on the Mayfair property fund tranche; flag resolved before next quarterly statement.',
+  },
+];
+
+const performancePeriods = ['1M', 'YTD', '1Y', 'All'];
+
+const txConfig: Record<
+  Transaction['type'],
+  { color: string; glyph: string; label: string }
+> = {
+  buy: { color: 'teal', glyph: '↗', label: 'Buy' },
+  sell: { color: 'red', glyph: '↘', label: 'Sell' },
+  dividend: { color: 'indigo', glyph: '$', label: 'Dividend' },
+};
+
+function KpiCard({ kpi }: { kpi: Kpi }) {
+  return (
+    <Card shadow="sm" padding="lg" radius="md" withBorder>
+      <Stack gap={6}>
+        <Text size="xs" c="dimmed" fw={600} tt="uppercase">
+          {kpi.label}
+        </Text>
+        <Text fz={28} fw={700} lh={1.1}>
+          {kpi.value}
+        </Text>
+        <Badge
+          color={kpi.trend.color}
+          variant="light"
+          size="sm"
+          radius="sm"
+          leftSection={<span>{kpi.trend.direction === 'up' ? '▲' : '▼'}</span>}
+        >
+          {kpi.trend.pct}
+        </Badge>
+      </Stack>
+    </Card>
+  );
+}
+
+function AllocationPanel() {
+  return (
+    <Paper shadow="sm" radius="md" withBorder p="lg" h="100%">
+      <Title order={4}>Asset Allocation</Title>
+      <Text size="xs" c="dimmed" mb="md">
+        Strategic split across asset classes
+      </Text>
+      <Group align="flex-start" wrap="nowrap" gap="xl">
+        <RingProgress
+          size={170}
+          thickness={16}
+          roundCaps
+          sections={allocation.map((a) => ({ value: a.pct, color: a.color }))}
+          label={
+            <Stack gap={0} align="center">
+              <Text fz={22} fw={700} ta="center">
+                100%
+              </Text>
+              <Text size="xs" c="dimmed" ta="center">
+                Invested
+              </Text>
+            </Stack>
+          }
+        />
+        <Stack gap="sm" style={{ flex: 1 }}>
+          {allocation.map((a) => (
+            <div key={a.assetClass}>
+              <Group justify="space-between" gap="xs" mb={4}>
+                <Group gap={8}>
+                  <ThemeIcon color={a.color} size={12} radius="xl" variant="filled">
+                    <span />
+                  </ThemeIcon>
+                  <Text size="sm">{a.assetClass}</Text>
+                </Group>
+                <Text size="sm" fw={600}>
+                  {a.pct}%
+                </Text>
+              </Group>
+              <Progress value={a.pct} color={a.color} size="sm" radius="xl" />
+            </div>
+          ))}
+        </Stack>
+      </Group>
+    </Paper>
+  );
+}
+
+function HoldingsTable() {
+  const rows = holdings.map((h) => {
+    const gain = h.dayChangePct > 0;
+    const flat = h.dayChangePct === 0;
+    return (
+      <Table.Tr key={h.ticker}>
+        <Table.Td>
+          <Text size="sm" fw={700}>
+            {h.ticker}
+          </Text>
+          <Text size="xs" c="dimmed">
+            {h.name}
+          </Text>
+        </Table.Td>
+        <Table.Td>
+          <Badge variant="default" size="sm" radius="sm">
+            {h.assetClass}
+          </Badge>
+        </Table.Td>
+        <Table.Td>
+          <Text size="sm" fw={600}>
+            <NumberFormatter prefix="$" thousandSeparator value={h.marketValue} />
+          </Text>
+        </Table.Td>
+        <Table.Td>
+          <Group gap={8} wrap="nowrap">
+            <Progress value={h.weightPct * 10} color="indigo" size="sm" radius="xl" w={70} />
+            <Text size="sm" w={42} ta="right">
+              {h.weightPct.toFixed(1)}%
+            </Text>
+          </Group>
+        </Table.Td>
+        <Table.Td>
+          <Badge
+            color={flat ? 'gray' : gain ? 'teal' : 'red'}
+            variant="light"
+            size="sm"
+            radius="sm"
+            leftSection={<span>{flat ? '—' : gain ? '▲' : '▼'}</span>}
+          >
+            {h.dayChangePct > 0 ? '+' : ''}
+            {h.dayChangePct.toFixed(2)}%
+          </Badge>
+        </Table.Td>
+      </Table.Tr>
+    );
+  });
+
+  return (
+    <ScrollArea>
+      <Table highlightOnHover withTableBorder verticalSpacing="sm" miw={620}>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Position</Table.Th>
+            <Table.Th>Asset Class</Table.Th>
+            <Table.Th>Market Value</Table.Th>
+            <Table.Th>Weight</Table.Th>
+            <Table.Th>Day Change</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>{rows}</Table.Tbody>
+      </Table>
+    </ScrollArea>
+  );
+}
+
+function AdvisorNotesPanel() {
+  return (
+    <Paper shadow="sm" radius="md" withBorder p="lg" h="100%">
+      <Title order={4} mb="md">
+        Advisor Notes
+      </Title>
+      <Accordion variant="separated" multiple defaultValue={['rebalance']}>
+        {advisorNotes.map((note) => (
+          <Accordion.Item key={note.value} value={note.value}>
+            <Accordion.Control>
+              <Text fw={600} size="sm">
+                {note.title}
+              </Text>
+              <Text size="xs" c="dimmed">
+                {note.meta}
+              </Text>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <Text size="sm">{note.body}</Text>
+            </Accordion.Panel>
+          </Accordion.Item>
+        ))}
+      </Accordion>
+    </Paper>
+  );
+}
+
+function TransactionsTimeline() {
+  return (
+    <Paper shadow="sm" radius="md" withBorder p="lg" h="100%">
+      <Title order={4} mb="lg">
+        Recent Transactions
+      </Title>
+      <Timeline active={transactions.length} bulletSize={28} lineWidth={2}>
+        {transactions.map((tx, idx) => {
+          const cfg = txConfig[tx.type];
+          return (
+            <Timeline.Item
+              key={idx}
+              bullet={
+                <ThemeIcon color={cfg.color} size={28} radius="xl" variant="light">
+                  <span style={{ fontSize: 14, fontWeight: 700 }}>{cfg.glyph}</span>
+                </ThemeIcon>
+              }
+              title={
+                <Group gap="xs">
+                  <Text size="sm" fw={600}>
+                    {cfg.label}
+                  </Text>
+                  <Badge color={cfg.color} variant="light" size="xs" radius="sm">
+                    {tx.date}
+                  </Badge>
+                </Group>
+              }
+            >
+              <Text size="sm" c="dimmed">
+                {tx.description}
+              </Text>
+            </Timeline.Item>
+          );
+        })}
+      </Timeline>
+    </Paper>
+  );
+}
+
+export default function BankingPortfolioClientAssets() {
+  const [section, setSection] = useState<string | null>('overview');
+  const [period, setPeriod] = useState('YTD');
+
+  return (
+    <MantineProvider>
+      <div style={{ background: 'var(--mantine-color-gray-0)', minHeight: '100vh', padding: 24 }}>
+        <Stack gap="lg">
+          {/* Header bar */}
+          <Paper shadow="sm" radius="md" withBorder p="lg">
+            <Group justify="space-between" align="flex-start" wrap="wrap">
+              <Group align="center" gap="md" wrap="nowrap">
+                <Avatar src={client.avatarUrl} name={client.name} size={64} radius="xl" />
+                <Stack gap={2}>
+                  <Text size="xs" c="dimmed" fw={600} tt="uppercase">
+                    Banking Portfolio · Client Assets
+                  </Text>
+                  <Title order={2}>{client.name}</Title>
+                  <Group gap="xs">
+                    <Text size="sm" c="dimmed">
+                      Account {client.accountNumber}
+                    </Text>
+                    <Divider orientation="vertical" />
+                    <Badge variant="light" color="indigo" size="sm" radius="sm">
+                      {client.segment}
+                    </Badge>
+                    <Text size="sm" c="dimmed">
+                      RM: {client.relationshipManager}
+                    </Text>
+                  </Group>
+                </Stack>
+              </Group>
+              <Alert
+                color="orange"
+                variant="light"
+                radius="md"
+                title="Compliance Note"
+                icon={<span style={{ fontSize: 18, fontWeight: 700 }}>!</span>}
+                maw={460}
+              >
+                <Text size="sm">{complianceNote}</Text>
+              </Alert>
+            </Group>
+          </Paper>
+
+          {/* Controls row */}
+          <Group justify="space-between" align="center" wrap="wrap">
+            <Tabs value={section} onChange={setSection} variant="pills" radius="md">
+              <Tabs.List>
+                <Tabs.Tab value="overview">Overview</Tabs.Tab>
+                <Tabs.Tab value="holdings">Holdings</Tabs.Tab>
+                <Tabs.Tab value="transactions">Transactions</Tabs.Tab>
+                <Tabs.Tab value="documents">Documents</Tabs.Tab>
+              </Tabs.List>
+            </Tabs>
+            <Group gap="xs" align="center">
+              <Text size="sm" c="dimmed" fw={600}>
+                Performance period
+              </Text>
+              <SegmentedControl
+                value={period}
+                onChange={setPeriod}
+                data={performancePeriods}
+                radius="md"
+              />
+            </Group>
+          </Group>
+
+          {/* KPI stat-card row */}
+          <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="lg">
+            {kpis.map((kpi) => (
+              <KpiCard key={kpi.label} kpi={kpi} />
+            ))}
+          </SimpleGrid>
+
+          <Divider
+            label="Portfolio detail"
+            labelPosition="left"
+            my={4}
+          />
+
+          {/* Allocation + Holdings */}
+          <Grid gutter="lg">
+            <Grid.Col span={{ base: 12, lg: 5 }}>
+              <AllocationPanel />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, lg: 7 }}>
+              <Paper shadow="sm" radius="md" withBorder p="lg" h="100%">
+                <Group justify="space-between" align="center" mb="md">
+                  <Title order={4}>Holdings</Title>
+                  <Text size="xs" c="dimmed">
+                    {holdings.length} positions · {period}
+                  </Text>
+                </Group>
+                <HoldingsTable />
+              </Paper>
+            </Grid.Col>
+          </Grid>
+
+          {/* Advisor notes + Timeline */}
+          <Grid gutter="lg">
+            <Grid.Col span={{ base: 12, lg: 6 }}>
+              <AdvisorNotesPanel />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, lg: 6 }}>
+              <TransactionsTimeline />
+            </Grid.Col>
+          </Grid>
+        </Stack>
+      </div>
+    </MantineProvider>
+  );
+}

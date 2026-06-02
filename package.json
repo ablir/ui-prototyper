@@ -1,0 +1,29 @@
+{
+  "name": "ui-prototyper",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Presentation site for the AI-driven, library-agnostic React UI prototyping system.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mantine/code-highlight": "^7.13.4",
+    "@mantine/core": "^7.13.4",
+    "@mantine/hooks": "^7.13.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.0.1",
+    "remark-gfm": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "~5.4.5",
+    "vite": "^5.3.4"
+  }
+}
