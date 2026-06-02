@@ -95,14 +95,14 @@ export function Overview({ onNavigate }: { onNavigate: (v: string) => void }) {
       </Paper>
 
       {/* North star */}
-      <Paper withBorder radius="md" p="lg" mb="xl" bg="white">
+      <Paper withBorder radius="md" p="lg" mb="xl">
         <Group gap="sm" mb={6}>
           <ThemeIcon variant="light" color="yellow" radius="xl" size={30}>
             <Text fw={800}>★</Text>
           </ThemeIcon>
           <Title order={3}>The North Star</Title>
         </Group>
-        <Text c="gray.7">
+        <Text c="dimmed">
           The engine <b>never hardcodes a single library&rsquo;s</b> components, data, colors, or theme.
           It learns each library at runtime and reasons entirely over the profile it shelved &mdash;
           so the very same pipeline works for Ant Design, MUI, Mantine, or your in-house library.
@@ -121,7 +121,7 @@ export function Overview({ onNavigate }: { onNavigate: (v: string) => void }) {
               </ThemeIcon>
               <Title order={4}>{h.title}</Title>
             </Group>
-            <Text size="sm" c="gray.7" mb="md">{h.body}</Text>
+            <Text size="sm" c="dimmed" mb="md">{h.body}</Text>
             <Badge variant="light" color={h.color} radius="sm">{h.out}</Badge>
           </Card>
         ))}
@@ -166,7 +166,7 @@ export function Overview({ onNavigate }: { onNavigate: (v: string) => void }) {
                   <Table.Tr key={p[0]}>
                     <Table.Td><Badge variant="light" color="indigo" radius="sm">{p[0]}</Badge></Table.Td>
                     <Table.Td><Text size="xs" ff="monospace">{p[1]}</Text></Table.Td>
-                    <Table.Td><Text size="xs" c="gray.7">{p[3]}</Text></Table.Td>
+                    <Table.Td><Text size="xs" c="dimmed">{p[3]}</Text></Table.Td>
                   </Table.Tr>
                 ))}
               </Table.Tbody>

@@ -102,7 +102,7 @@ export function App() {
         </ScrollArea>
       </AppShell.Navbar>
 
-      <AppShell.Main bg="gray.0">
+      <AppShell.Main bg="dark.8">
         {view === 'overview' && <Overview onNavigate={(v) => go(v as View)} />}
         {view === 'spec' && <SpecExplorer />}
         {view === 'guide' && <UsageGuide />}

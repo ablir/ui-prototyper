@@ -59,7 +59,7 @@ export function UsageGuide() {
                   <Title order={3}>{s.title}</Title>
                 </Group>
                 <Text fw={600} c="indigo.7" mb={6}>{s.action}</Text>
-                <Text size="sm" c="gray.7">{s.plain}</Text>
+                <Text size="sm" c="dimmed">{s.plain}</Text>
                 {s.behind && (
                   <Alert variant="light" color="gray" mt="md" p="sm" radius="md">
                     <Text size="xs" c="dimmed">
@@ -75,7 +75,7 @@ export function UsageGuide() {
                   withBorder
                   radius="md"
                   p={4}
-                  bg="gray.1"
+                  bg="dark.6"
                   style={{ cursor: 'zoom-in', overflow: 'hidden' }}
                   onClick={() => setZoom({ src: asset(s.image), alt: s.title })}
                 >
@@ -111,7 +111,7 @@ export function UsageGuide() {
             withBorder
             radius="md"
             p={4}
-            bg="gray.1"
+            bg="dark.6"
             style={{ cursor: 'zoom-in' }}
             onClick={() => setZoom({ src: asset(BANKING.screenshot), alt: 'Banking Portfolio dashboard' })}
           >
@@ -158,8 +158,13 @@ export function UsageGuide() {
           <CodeBlock code={BANKING.code} language="tsx" />
         </Paper>
 
-        <Paper withBorder radius="md" p="lg" bg="indigo.0">
-          <Text size="sm" c="gray.7">
+        <Paper
+          withBorder
+          radius="md"
+          p="lg"
+          style={{ background: 'rgba(99, 102, 241, 0.10)', borderColor: 'var(--mantine-color-indigo-8)' }}
+        >
+          <Text size="sm" c="dimmed">
             Want to run it yourself? The full build + run instructions live in the spec&rsquo;s{' '}
             <Anchor href="#spec">Runbook (07)</Anchor>. The same flow works against Ant Design, MUI,
             or any importable React component library.
